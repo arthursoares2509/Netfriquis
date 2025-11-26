@@ -9,49 +9,41 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/filmes")
 public class FilmeController {
 
     @Autowired
     private FilmeService filmeService;
 
-    // página inicial (index.html)
-    @GetMapping("/index")
-    public String index() {
-        return "filmes/index"; // abre templates/filmes/index.html
+    @GetMapping("/")
+    public String home() {
+        return "filmes/index";
     }
 
-    // lista todos os filmes (list.html)
-    @GetMapping
+    @GetMapping("/filmes")
     public String listarFilmes(Model model) {
         model.addAttribute("filmes", filmeService.listarTodos());
-        model.addAttribute("filme", new Filme()); // necessário para th:object no formulário
-        return "filmes/list"; // abre templates/filmes/list.html
+        model.addAttribute("filme", new Filme());
+        return "filmes/list";
     }
 
-    // salvar filme (POST /filmes)
-    @PostMapping
+    @PostMapping("/filmes")
     public String salvarFilme(@ModelAttribute Filme filme) {
         filmeService.salvarFilme(filme);
-        return "redirect:/filmes"; // mantém funcionalidade de salvar
+        return "redirect:/filmes";
     }
 
-    // detalhes do filme (detail.html)
-    @GetMapping("/{id}")
+    @GetMapping("/filmes/{id}")
     public String detalhesFilme(@PathVariable Long id, Model model) {
         Filme filme = filmeService.buscarPorId(id).orElse(null);
-        if (filme == null) {
-            return "redirect:/filmes"; // redireciona para a lista se não achar
-        }
+        if (filme == null) return "redirect:/filmes";
         model.addAttribute("filme", filme);
-        model.addAttribute("analise", new Analise()); // necessário para th:object do formulário de análise
-        return "filmes/detail"; // abre templates/filmes/detail.html
+        model.addAttribute("analise", new Analise());
+        return "filmes/detail";
     }
 
-    // adicionar análise (POST /filmes/{id}/analises)
-    @PostMapping("/{id}/analises")
+    @PostMapping("/filmes/{id}/analises")
     public String adicionarAnalise(@PathVariable Long id, @ModelAttribute Analise analise) {
         filmeService.adicionarAnalise(id, analise);
-        return "redirect:/filmes/" + id; // mantém funcionalidade
+        return "redirect:/filmes/" + id;
     }
 }
