@@ -1,65 +1,137 @@
 <!DOCTYPE html>
-<html lang="pt-Br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netfriquis</title>
-</head>
-<body>
-    <header class ="header">
-        <h1 class="title">NETFRIQUIS</h1>
-    </header>
-    <section class = "container">
-        <h2>O catálogo completo está aqui</h2>
-        <button onclick="irParaLista()">Entrar</button>
-    </section>
-</body>
+<html lang = "pt-Br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cadastro de Filmes - Netfriquis</title>
+    </head>
+    <body>
+        <header class ="header">
+            <h1 class="title">CATÁLOGO NETFRIQUIS</h1>
+        </header>
 
-<style>
-    body {
-        margin: 0;
-        background: black;
-        color: white;
-        font-family: Arial, sans-serif;
-    }
+        <section class="container">
+            <h2>Cadastrar Filme</h2>
 
-    .header {
-        padding: 20px;
-        text-align: center;
-        background: red;
-        color: white;
-        font-size: 32px;
-        font-weight: bold;
-    }
+            <form id = "formFilme">
+                <input type="text" id = "titulo" placeholder="Título de Filme" required>
+                <input type="text" id = "genero" placeholder="Gênero" required>
+                <textarea id = "analise" placeholder="Sua Análise" required></textarea>
+                <button type="submit">Adicionar</button>
+            </form>
 
-    .container {
-        text-align: center;
-        margin-top: 100px;
-    }
+            <h2>Lista de Filmes</h2>
+            <ul id="listaFilmes"></ul>
+        </section>
+    </body>
 
-    h2 {
-        font-size: 24px;
-        margin-bottom: 40px;
-    }
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
 
-    button {
-        background: red;
-        border: none;
-        padding: 15px 40px;
-        color: white;
-        cursor: pointer;
-        border-radius: 8px;
-        transition: 0.3s;
-    }
+        .header {
+            padding: 20px;
+            text-align: center;
+            background: red;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
 
-    button:hover {
-        background: darkred;
-    }
-</style>
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+        }
 
-<script>
-    function irParaLista() {
-        window.location.href = "list.html";
-    }
-</script>
+        h2 {
+            margin-top: 30px;
+            font-size: 24px;
+            color: red;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        input, textarea {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            font-size: 16px;
+            color: black;
+        }
+
+        textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        button {
+            background: red;
+            border: none;
+            padding: 15px;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: darkred;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: #1a1a1a;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid red;
+            border-radius: 8px;
+        }
+
+        li h3 {
+            margin: 0;
+            color: red;
+        }
+
+        li p {
+            margin: 6px 0;
+        }
+    </style>
+
+    <script>
+        const form = document.getElementById("formFilme");
+        const lista = document.getElementById("listaFilmes");
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const titulo = document.getElementById("titulo").value;
+            const genero = document.getElementById("genero").value;
+            const analise = document.getElementById("analise").value;
+
+            const item = document.createElement("li");
+            item.innerHTML =
+                `<h3>${titulo}</h3>
+                <p><strong>Gênero:</strong> ${genero}</p>
+                <p><strong>Análise:</strong> ${analise}</p>`;
+            
+                lista.appendChild(item);
+            form.reset();
+        });
+    </script>
 </html>
