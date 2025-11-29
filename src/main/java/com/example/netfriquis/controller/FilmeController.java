@@ -14,36 +14,55 @@ public class FilmeController {
     @Autowired
     private FilmeService filmeService;
 
+    // Página inicial (apresentação)
     @GetMapping("/")
     public String home() {
-        return "filmes/index";
+        return "filmes/index"; // index.html
     }
 
-    @GetMapping("/filmes")
-    public String listarFilmes(Model model) {
-        model.addAttribute("filmes", filmeService.listarTodos());
+    // Menu com as opções (cadastro ou análise)
+    @GetMapping("/menu")
+    public String menu() {
+        return "filmes/menu"; // menu.html
+    }
+
+    // Página de cadastro de filmes (frontend)
+    @GetMapping("/cadastro")
+    public String paginaCadastro(Model model) {
         model.addAttribute("filme", new Filme());
-        return "filmes/list";
+        model.addAttribute("filmes", filmeService.listarTodos());
+        return "filmes/cadastro"; // cadastro.html
     }
 
-    @PostMapping("/filmes")
+    // Salvar filme (backend)
+    @PostMapping("/cadastro")
     public String salvarFilme(@ModelAttribute Filme filme) {
         filmeService.salvarFilme(filme);
-        return "redirect:/filmes";
+        return "redirect:/cadastro";
     }
 
-    @GetMapping("/filmes/{id}")
-    public String detalhesFilme(@PathVariable Long id, Model model) {
-        Filme filme = filmeService.buscarPorId(id).orElse(null);
-        if (filme == null) return "redirect:/filmes";
-        model.addAttribute("filme", filme);
+    // Página de análise (frontend)
+    @GetMapping("/analise")
+    public String paginaAnalise(Model model) {
+        model.addAttribute("filmes", filmeService.listarTodos());
         model.addAttribute("analise", new Analise());
-        return "filmes/detail";
+        return "filmes/analise"; // analise.html
     }
 
-    @PostMapping("/filmes/{id}/analises")
-    public String adicionarAnalise(@PathVariable Long id, @ModelAttribute Analise analise) {
+    // Adicionar análise a um filme (backend)
+    @PostMapping("/analise/{id}")
+    public String adicionarAnalise(
+            @PathVariable Long id,
+            @ModelAttribute Analise analise
+    ) {
         filmeService.adicionarAnalise(id, analise);
-        return "redirect:/filmes/" + id;
+        return "redirect:/analise";
+    }
+
+    // Remover filme (backend)
+    @PostMapping("/filme/{id}/remover")
+    public String removerFilme(@PathVariable Long id) {
+        filmeService.removerFilme(id);
+        return "redirect:/cadastro";
     }
 }

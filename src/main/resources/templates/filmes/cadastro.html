@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Filmes</title>
+</head>
+<body>
+
+<header class="header">
+    <h1 class="title">CADASTRO DE FILMES</h1>
+</header>
+
+<section class="container">
+    <h2>Cadastrar Filme</h2>
+
+    <form id="formFilme">
+        <input type="text" id="titulo" placeholder="Título do Filme" required>
+        <input type="text" id="genero" placeholder="Gênero" required>
+        <input type="text" id="ano" placeholder="dd/MM/yyyy" maxlength="10" required>
+        <textarea id="sinopse" placeholder="Sinopse" required></textarea>
+        <button type="submit">Salvar</button>
+    </form>
+
+    <h2>Filmes Cadastrados</h2>
+    <ul id="listaFilmes"></ul>
+
+    <button class="voltar" onclick="voltar()">Voltar ao Menu</button>
+</section>
+
+</body>
+
+<style>
+body{margin:0;background:black;color:white;font-family:Arial,sans-serif;}
+.header{padding:20px;text-align:center;background:red;color:white;font-size:32px;font-weight:bold;}
+.container{max-width:700px;margin:40px auto;padding:20px;}
+h2{margin-top:30px;font-size:24px;color:red;}
+form{display:flex;flex-direction:column;gap:15px;margin-bottom:40px;}
+input, textarea{padding:12px;border:none;border-radius:8px;background:white;font-size:16px;color:black;}
+textarea{height:120px;resize:none;overflow:auto;}
+button{background:red;border:none;padding:15px;color:white;cursor:pointer;border-radius:8px;font-size:16px;transition:.3s;}
+button:hover{background:darkred;}
+ul{list-style:none;padding:0;}
+li{background:#1a1a1a;padding:15px;margin-bottom:15px;border-left:5px solid red;border-radius:8px;}
+li h3{margin:0;color:red;}
+.remover{background:#660000;padding:10px 15px;font-size:14px;}
+.remover:hover{background:#440000;}
+.voltar{margin-top:40px;width:100%;}
+
+/* CAIXA CORRIGIDA PARA SINOPSE */
+.sinopse-box{
+    background:#111;
+    padding:12px;
+    border-radius:8px;
+    margin-top:10px;
+    white-space:pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap:anywhere;
+}
+</style>
+
+<script>
+let filmes = JSON.parse(localStorage.getItem("filmes")) || [];
+
+const anoInput = document.getElementById("ano");
+
+/* máscara dd/MM/yyyy */
+anoInput.addEventListener("input", () => {
+    let v = anoInput.value.replace(/\D/g, "");
+    if (v.length >= 3) v = v.replace(/(\d{2})(\d)/, "$1/$2");
+    if (v.length >= 6) v = v.replace(/(\d{2}\/\d{2})(\d)/, "$1/$2");
+    anoInput.value = v;
+});
+
+function atualizarLista(){
+    const lista = document.getElementById("listaFilmes");
+    lista.innerHTML="";
+
+    filmes.forEach(f=>{
+        const li=document.createElement("li");
+
+        li.innerHTML = `
+            <h3>${f.titulo}</h3>
+            <p>${f.genero}</p>
+            <p>${f.ano}</p>
+
+            <div class="sinopse-box">
+                <strong>Sinopse:</strong><br>
+                ${f.sinopse}
+            </div>
+
+            <button class="remover" onclick="removerFilme(${f.id})">Remover</button>
+        `;
+
+        lista.appendChild(li);
+    });
+}
+
+function removerFilme(id){
+    filmes = filmes.filter(f=>f.id!==id);
+    localStorage.setItem("filmes",JSON.stringify(filmes));
+    atualizarLista();
+}
+
+document.getElementById("formFilme").addEventListener("submit",e=>{
+    e.preventDefault();
+
+    filmes.push({
+        id:Date.now(),
+        titulo:titulo.value,
+        genero:genero.value,
+        ano:anoInput.value,
+        sinopse:sinopse.value,
+        analises:[]
+    });
+
+    localStorage.setItem("filmes",JSON.stringify(filmes));
+
+    e.target.reset();
+    atualizarLista();
+});
+
+function voltar(){window.location.href="/menu";}
+atualizarLista();
+</script>
+
+</html>

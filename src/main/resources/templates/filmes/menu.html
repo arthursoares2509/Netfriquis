@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-Br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Menu - Netfriquis</title>
+    </head>
+    <body>
+        <header class ="header">
+            <h1 class="title">NETFRIQUIS</h1>
+        </header>
+        <section class = "container">
+            <h2>Escolha uma opção</h2>
+            <button onclick="goCadastro()">Cadastrar Filme</button>
+            <button onclick="goLista()">Ver Lista de Filmes</button>
+        </section>
+    </body>
+    <style>
+        body{margin:0;background:black;color:white;font-family:Arial,sans-serif;}
+        .header{padding:20px;text-align:center;background:red;color:white;font-size:32px;font-weight:bold;}
+        .container{text-align:center;margin-top:100px;}
+        h2{font-size:24px;margin-bottom:40px;}
+        button{background:red;border:none;padding:15px 35px;color:white;cursor:pointer;border-radius:8px;font-size:18px;transition:0.3s;}
+        button:hover{background:darkred;}
+   </style>
+   <script>
+    function goCadastro(){window.location.href="/cadastro";}
+    function goLista(){window.location.href="/analise";}
+   </script>
+</html>

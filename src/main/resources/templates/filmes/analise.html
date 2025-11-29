@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Filmes</title>
+</head>
+<body>
+
+<header class="header">
+    <h1 class="title">ANÁLISE DE FILMES</h1>
+</header>
+
+<section class="container">
+    <h2>Filmes Disponíveis</h2>
+
+    <ul id="listaFilmes"></ul>
+
+    <button class="voltar" onclick="voltar()">Voltar ao Menu</button>
+</section>
+
+</body>
+
+<style>
+body{margin:0;background:black;color:white;font-family:Arial,sans-serif;}
+.header{padding:20px;text-align:center;background:red;color:white;font-size:32px;font-weight:bold;}
+.container{max-width:900px;margin:40px auto;padding:20px;}
+h2{margin-top:30px;font-size:24px;color:red;}
+ul{list-style:none;padding:0;}
+.filme-card{background:#1a1a1a;padding:20px;margin-bottom:20px;border-left:5px solid red;border-radius:10px;}
+.filme-card h3{margin:0;color:red;font-size:22px;}
+button{background:red;border:none;padding:12px 20px;color:white;cursor:pointer;border-radius:8px;font-size:16px;transition:.3s;}
+button:hover{background:darkred;}
+.estrelas{display:flex;gap:5px;margin:10px 0;}
+.estrela{font-size:26px;cursor:pointer;color:white;transition:.2s;}
+.estrela.selected{color:yellow;}
+textarea{width:100%;height:120px;border-radius:8px;padding:10px;font-size:15px;margin-top:10px;resize:none;}
+.analises-box{margin-top:20px;background:#111;padding:15px;border-radius:8px;}
+.analise-item{padding:10px;margin-top:10px;background:#222;border-left:4px solid red;border-radius:8px;}
+.remover-analise{background:#660000;margin-top:8px;font-size:14px;padding:8px 15px;}
+.remover-analise:hover{background:#440000;}
+.aviso{opacity:.7;font-style:italic;margin-top:10px;}
+.voltar{margin-top:40px;width:100%;}
+
+/* CAIXA DE SINOPSE CORRIGIDA */
+.sinopse-box{
+    background:#111;
+    padding:12px;
+    border-radius:8px;
+    margin-top:10px;
+    white-space:pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap:anywhere;
+}
+</style>
+
+<script>
+let filmes = JSON.parse(localStorage.getItem("filmes")) || [];
+
+function atualizarLista(){
+    const lista = document.getElementById("listaFilmes");
+    lista.innerHTML="";
+
+    filmes.forEach(f=>{
+        const li = document.createElement("li");
+        li.className = "filme-card";
+
+        li.innerHTML = `
+            <h3>${f.titulo}</h3>
+            <p>${f.genero}</p>
+            <p>${f.ano}</p>
+
+            <div class="sinopse-box">
+                <strong>Sinopse:</strong><br>
+                ${f.sinopse}
+            </div>
+
+            <div class="estrelas" id="stars-${f.id}">
+                ${[1,2,3,4,5].map(n => `
+                    <span class="estrela" onclick="selecionarNota(${f.id}, ${n})">&#9733;</span>
+                `).join("")}
+            </div>
+
+            <textarea id="texto-${f.id}" placeholder="Escreva sua análise"></textarea>
+            <button onclick="salvarAnalise(${f.id})">Realizar Análise</button>
+
+            <div class="analises-box" id="analises-${f.id}"></div>
+        `;
+
+        lista.appendChild(li);
+        exibirAnalises(f.id);
+        atualizarEstrelas(f.id);
+    });
+}
+
+function selecionarNota(idFilme, nota){
+    const filme = filmes.find(f => f.id===idFilme);
+    filme.notaTemp = nota;
+    atualizarEstrelas(idFilme);
+}
+
+function atualizarEstrelas(idFilme){
+    const filme = filmes.find(f => f.id===idFilme);
+    const stars = document.querySelectorAll(`#stars-${idFilme} .estrela`);
+    const nota = filme.notaTemp || 0;
+
+    stars.forEach((s, i)=> s.classList.toggle("selected", i < nota));
+}
+
+function salvarAnalise(idFilme){
+    const filme = filmes.find(f => f.id===idFilme);
+    const texto = document.getElementById(`texto-${idFilme}`).value.trim();
+    const nota = filme.notaTemp || 0;
+
+    if(texto==="") return;
+
+    filme.analises.push({
+        id: Date.now(),
+        nota: nota,
+        texto: texto
+    });
+
+    filme.notaTemp = 0;
+    localStorage.setItem("filmes", JSON.stringify(filmes));
+
+    document.getElementById(`texto-${idFilme}`).value = "";
+    atualizarEstrelas(idFilme);
+    exibirAnalises(idFilme);
+}
+
+function removerAnalise(idFilme, idAnalise){
+    const filme = filmes.find(f=>f.id===idFilme);
+    filme.analises = filme.analises.filter(a=>a.id!==idAnalise);
+
+    localStorage.setItem("filmes",JSON.stringify(filmes));
+    exibirAnalises(idFilme);
+}
+
+function exibirAnalises(idFilme){
+    const filme = filmes.find(f=>f.id===idFilme);
+    const box = document.getElementById(`analises-${idFilme}`);
+
+    if (!filme.analises.length){
+        box.innerHTML = "<p class='aviso'>Sem análises</p>";
+        return;
+    }
+
+    box.innerHTML = filme.analises.map(a => `
+        <div class="analise-item">
+            <p>Nota: ${"★".repeat(a.nota)}${"☆".repeat(5-a.nota)}</p>
+            <p>${a.texto}</p>
+            <button class="remover-analise" onclick="removerAnalise(${idFilme},${a.id})">Remover Análise</button>
+        </div>
+    `).join("");
+}
+
+function voltar(){window.location.href="/menu";}
+atualizarLista();
+</script>
+
+</html>

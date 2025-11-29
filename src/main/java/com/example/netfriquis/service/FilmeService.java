@@ -39,4 +39,8 @@ public class FilmeService {
         filme.adicionarAnalise(analise);
         return analise;
     }
+
+    public void removerFilme(Long id) {
+        filmes.remove(id);
+    }
 }
