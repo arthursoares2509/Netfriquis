@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cadastro — Netfriquis</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="/js/app.js"></script>
+<style>
+  :root {
+    --bg: #0b0b0b;
+    --card: #111;
+    --muted: #9b9b9b;
+    --accent: #e50914;
+    --accent-dark: #b00610;
+    --radius: 14px;
+    --shadow: 0 10px 30px rgba(0,0,0,.7);
+    --input-bg: #0c0c0c;
+    --input-border: rgba(255,255,255,.1);
+    --text: white;
+  }
+  [data-theme="light"] {
+    --bg: #f5f5f5;
+    --card: #ffffff;
+    --muted: #666;
+    --input-bg: #ffffff;
+    --input-border: #ddd;
+    --text: #333;
+    --shadow: 0 10px 30px rgba(0,0,0,.1);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#070707,#0f0f0f);color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh;transition:background .4s,color .4s}
+  [data-theme="light"] body{background:#f5f5f5}
+  .header{background:var(--accent);padding:24px;text-align:center;font-size:30px;font-weight:900;position:relative}
+  .theme-toggle{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:none;border:none;color:white;font-size:24px;cursor:pointer}
+  .container{max-width:920px;margin:40px auto;padding:0 20px}
+  .grid{display:grid;grid-template-columns:1fr 380px;gap:30px;align-items:start}
+  .card{background:linear-gradient(180deg,var(--card),#0b0b0b);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.04);transition:all .4s}
+  [data-theme="light"] .card{background:#fff;border:1px solid #eee}
+  input,textarea{background:var(--input-bg);border:1px solid var(--input-border);padding:14px;border-radius:10px;color:var(--text);font-size:15px;transition:all .3s}
+  input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+  textarea{min-height:150px;resize:vertical}
+  #anoLancamento{font-family:monospace;letter-spacing:3px;font-size:17px}
+  .btn-primary{background:var(--accent);border:none;padding:14px 24px;border-radius:10px;color:white;font-weight:900;cursor:pointer;font-size:16px;transition:.3s}
+  .btn-primary:hover{background:var(--accent-dark)}
+  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.15);padding:10px 18px;border-radius:8px;color:var(--text);cursor:pointer;transition:.3s}
+  .btn-ghost:hover{background:rgba(255,255,255,.08)}
+  [data-theme="light"] .btn-ghost{border-color:#ccc;color:#333}
+  [data-theme="light"] .btn-ghost:hover{background:#f0f0f0}
+  .list{gap:16px;display:flex;flex-direction:column}
+  .item{background:#090909;padding:18px;border-radius:10px;border-left:6px solid var(--accent);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;transition:.2s}
+  [data-theme="light"] .item{background:#f8f9fa;border-left-color:var(--accent)}
+  .item:hover{transform:translateY(-3px)}
+  .sinopse{background:#070707;padding:12px;border-radius:8px;margin-top:8px;font-size:14px;line-height:1.5}
+  [data-theme="light"] .sinopse{background:#eee;color:#333}
+  .toast{position:fixed;right:20px;top:20px;background:#161616;padding:16px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.04);box-shadow:var(--shadow);z-index:9999;display:none;color:white}
+  [data-theme="light"] .toast{background:#333;color:white}
+  @media(max-width:880px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  NETFRIQUIS — Cadastro
+  <button class="theme-toggle" aria-label="Alternar tema">☀️</button>
+</header>
+<div class="container">
+  <div class="grid">
+    <div class="card">
+      <form id="formFilme">
+        <input name="titulo" type="text" placeholder="Título" required>
+        <input name="genero" type="text" placeholder="Gênero" required>
+        <input id="anoLancamento" type="text" placeholder="__/__/____" maxlength="10" required>
+        <textarea name="sinopse" placeholder="Sinopse" required></textarea>
+        <div style="display:flex;gap:16px;margin-top:12px">
+          <button class="btn-primary" type="submit">Salvar Filme</button>
+          <a href="/menu"><button type="button" class="btn-ghost">Voltar</button></a>
+        </div>
+      </form>
+    </div>
+    <aside class="card">
+      <h3 style="margin-top:0;color:var(--text)">Filmes cadastrados</h3>
+      <div id="listaFilmes" class="list"></div>
+    </aside>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+  const toggle = document.querySelector('.theme-toggle');
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+  if (currentTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  toggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+
+  toggle.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
+      toggle.textContent = '☀️';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+      toggle.textContent = '🌙';
+    }
+  });
+</script>
+</body>
+</html>

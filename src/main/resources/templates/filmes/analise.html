@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Análises — Netfriquis</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="/js/app.js"></script>
+<style>
+  :root {
+    --accent: #e50914;
+    --accent-dark: #b00610;
+    --radius: 14px;
+    --shadow: 0 12px 32px rgba(0,0,0,.7);
+    --bg: #000;
+    --text: white;
+    --card-bg: #111;
+    --input-bg: #0c0c0c;
+    --input-border: rgba(255,255,255,.1);
+  }
+  [data-theme="light"] {
+    --bg: #f8f9fa;
+    --text: #212529;
+    --card-bg: #ffffff;
+    --input-bg: #ffffff;
+    --input-border: #ddd;
+    --shadow: 0 12px 32px rgba(0,0,0,.1);
+  }
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh;transition:all .4s}
+  .header{background:var(--accent);padding:24px;text-align:center;font-size:30px;font-weight:900;position:relative}
+  .theme-toggle{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:none;border:none;color:white;font-size:24px;cursor:pointer}
+  .back-btn{position:absolute;left:20px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:white;font-size:24px;cursor:pointer}
+  .container{max-width:1000px;margin:40px auto;padding:0 20px}
+  .card{background:var(--card-bg);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);margin-bottom:30px;border:1px solid rgba(255,255,255,.04);transition:all .4s}
+  [data-theme="light"] .card{border:1px solid #eee}
+  .title{font-size:24px;font-weight:900;margin-bottom:8px}
+  .info{color:#999;font-size:15px;margin-bottom:20px}
+  [data-theme="light"] .info{color:#666}
+  .sinopse{background:#0a0a0a;padding:16px;border-radius:10px;margin:20px 0;line-height:1.6}
+  [data-theme="light"] .sinopse{background:#f0f0f0;color:#333}
+  .star-rating{display:flex;gap:10px;margin-bottom:16px}
+  .star{font-size:34px;cursor:pointer;color:#444;transition:.2s}
+  .star.filled{color:gold;transform:scale(1.15);text-shadow:0 0 12px gold}
+  textarea{background:var(--input-bg);border:1px solid var(--input-border);padding:16px;border-radius:10px;color:var(--text);width:100%;min-height:100px;resize:vertical;transition:all .3s}
+  .btn{background:var(--accent);border:none;padding:12px 24px;border-radius:10px;color:white;font-weight:900;cursor:pointer;transition:.3s}
+  .btn:hover{background:var(--accent-dark)}
+  .analise-item{background:#0a0a0a;padding:16px;border-radius:10px;margin-top:16px;transition:all .4s}
+  [data-theme="light"] .analise-item{background:#f5f5f5}
+  .analise-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .toast{position:fixed;right:20px;top:20px;background:#161616;padding:16px 20px;border-radius:10px;box-shadow:var(--shadow);z-index:9999;display:none;color:white}
+  [data-theme="light"] .toast{background:#333}
+</style>
+</head>
+<body>
+<header class="header">
+  <a href="/menu" class="back-btn">←</a>
+  NETFRIQUIS — Análises
+  <button class="theme-toggle" aria-label="Alternar tema">☀️</button>
+</header>
+<div class="container">
+  <div id="listaAnalises"></div>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+  const toggle = document.querySelector('.theme-toggle');
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+  if (currentTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  toggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+
+  toggle.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
+      toggle.textContent = '☀️';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+      toggle.textContent = '🌙';
+    }
+  });
+</script>
+</body>
+</html>

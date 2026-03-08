@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netfriquis</title>
+<style>
+  :root {
+    --bg: #000;
+    --text: white;
+    --accent: #e50914;
+    --accent-dark: #b00610;
+    --card-bg: #111;
+    --input-bg: #0c0c0c;
+    --input-border: rgba(255,255,255,.1);
+  }
+  [data-theme="light"] {
+    --bg: #f8f9fa;
+    --text: #212529;
+    --card-bg: #ffffff;
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+  }
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;transition:background .4s,color .4s}
+  body{display:flex;flex-direction:column}
+  .header{background:var(--accent);padding:24px;text-align:center;font-size:32px;font-weight:900;position:relative}
+  .theme-toggle{position:absolute;right:20px;top:50%;transform:translateY(-50%);background:none;border:none;color:white;font-size:24px;cursor:pointer}
+  .container{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:30px}
+  h2{font-size:28px}
+  button{background:var(--accent);border:none;padding:16px 48px;color:white;border-radius:10px;font-size:20px;font-weight:bold;cursor:pointer;transition:.3s}
+  button:hover{background:var(--accent-dark)}
+</style>
+</head>
+<body>
+<header class="header">
+  NETFRIQUIS
+  <button class="theme-toggle" aria-label="Alternar tema">☀️</button>
+</header>
+<main class="container">
+  <h2>O catálogo completo está aqui</h2>
+  <a href="/menu"><button>Entrar</button></a>
+</main>
+<script>
+  const toggle = document.querySelector('.theme-toggle');
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+  if (currentTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  toggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+
+  toggle.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
+      toggle.textContent = '☀️';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+      toggle.textContent = '🌙';
+    }
+  });
+</script>
+</body>
+</html>
